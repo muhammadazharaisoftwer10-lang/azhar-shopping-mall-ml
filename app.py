@@ -1,10 +1,19 @@
 import streamlit as st
 import pandas as pd
 import os
+import sys
 import plotly.express as px
-from src.data_gen import generate_multi_shop_data
-from src.train import train_all
-from src.model_utils import load_model, predict_sales
+
+# ------------------------
+# Add src folder to Python path
+# ------------------------
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+
+# Import modules from src
+from data_gen import generate_multi_shop_data
+from features import make_features
+from train import train_all
+from model_utils import load_model, predict_sales
 
 # ------------------------
 # Config
@@ -14,7 +23,7 @@ MODELS_DIR = "models"
 SHOPS = ["Clothing", "Electronics", "FoodCourt", "Shoes"]
 
 # ------------------------
-# Page config
+# Streamlit Page Config
 # ------------------------
 st.set_page_config(
     page_title="AZHAR SHOPPING MALL SUKKUR",
@@ -23,7 +32,7 @@ st.set_page_config(
 )
 
 # ------------------------
-# Stylish header with gradient & shadow
+# Stylish Header
 # ------------------------
 st.markdown("""
 <style>
@@ -109,7 +118,6 @@ if st.sidebar.button("Predict"):
 st.markdown("### Overview")
 col1, col2 = st.columns([2, 1])
 
-# Filter data
 mask = (
     (df["date"] >= pd.to_datetime(start_date)) &
     (df["date"] <= pd.to_datetime(end_date)) &
@@ -126,7 +134,6 @@ with col1:
     else:
         agg = df_view.groupby("date").agg({"sales": "sum", "footfall": "sum"}).reset_index()
         
-        # Line chart: Total Sales
         fig_sales = px.line(
             agg,
             x="date",
@@ -138,7 +145,6 @@ with col1:
         )
         st.plotly_chart(fig_sales, use_container_width=True)
 
-        # Bar chart: Total Footfall
         fig_footfall = px.bar(
             agg,
             x="date",
@@ -179,7 +185,6 @@ for shop in shop_filter:
         continue
     st.markdown(f"#### 🏬 {shop}")
     
-    # Sales line chart per shop
     fig_shop_sales = px.line(
         sdata,
         x="date",
@@ -191,7 +196,6 @@ for shop in shop_filter:
     )
     st.plotly_chart(fig_shop_sales, use_container_width=True)
     
-    # Footfall bar chart per shop
     fig_shop_footfall = px.bar(
         sdata,
         x="date",
