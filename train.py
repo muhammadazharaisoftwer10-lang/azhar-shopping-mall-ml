@@ -2,8 +2,8 @@ import pandas as pd
 import os
 from sklearn.ensemble import RandomForestRegressor
 import joblib
-from .features import make_features
-from .data_gen import generate_multi_shop_data
+from features import make_features
+from data_gen import generate_multi_shop_data
 
 def train_all(csv_path="data/sales_multi.csv", models_dir="models"):
     """

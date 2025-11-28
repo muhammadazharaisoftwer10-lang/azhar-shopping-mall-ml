@@ -1,8 +1,8 @@
 import joblib
 import os
 import pandas as pd
-from .features import make_features
-from .train import train_all
+from features import make_features
+from train import train_all
 
 def load_model(shop, models_dir="models"):
     """

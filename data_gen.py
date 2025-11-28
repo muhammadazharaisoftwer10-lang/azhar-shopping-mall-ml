@@ -3,7 +3,11 @@ import numpy as np
 import os
 from datetime import datetime, timedelta
 
+
 def generate_multi_shop_data(days=365, shops=None, save_path="data/sales_multi.csv"):
+    """
+    Generate 1-year shopping mall sales dataset for multiple shops.
+    """
 
     # Default shops list
     if shops is None:
@@ -18,11 +22,11 @@ def generate_multi_shop_data(days=365, shops=None, save_path="data/sales_multi.c
 
     rows = []
 
-    # Generate data for each shop per day
+    # Generate data per shop per day
     for d in dates:
         for shop in shops:
 
-            # Base traffic by shop type
+            # Base footfall per shop
             base = {
                 "Clothing": 800,
                 "Electronics": 400,
@@ -34,6 +38,7 @@ def generate_multi_shop_data(days=365, shops=None, save_path="data/sales_multi.c
             advertising = np.random.randint(2000, 50000)
             events = np.random.choice([0, 1], p=[0.9, 0.1])
 
+            # Sales calculation
             sales = int(
                 footfall * np.random.uniform(30, 120)
                 + advertising * np.random.uniform(0.5, 3.0)
@@ -50,8 +55,11 @@ def generate_multi_shop_data(days=365, shops=None, save_path="data/sales_multi.c
             })
 
     df = pd.DataFrame(rows)
+
+    # Save file
     df.to_csv(save_path, index=False)
 
+    # Safety check
     if df.empty:
         raise ValueError("Generated data is empty")
 
